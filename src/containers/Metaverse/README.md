@@ -1,4 +1,4 @@
-# Three.js 实现3D开放世界小游戏：阿狸的多元宇宙 🦊
+# Three.js 实现 3D 开放世界小游戏：阿狸的多元宇宙 🦊
 
 ![banner](./images/banner.gif)
 
@@ -6,7 +6,7 @@
 
 ## 背景
 
-> **2545光年**之外的**开普勒1028星系**，有一颗色彩斑斓的宜居星球 `🌑`，星际移民 `👨‍🚀` 必须穿戴**基地**发放的防辐射服才能生存。阿狸 `🦊` 驾驶星际飞行器 `🚀` 降临此地，快帮它在限定时间内使用**轮盘**移动**找到基地**获取防辐射服吧！
+> **2545 光年**之外的**开普勒 1028 星系**，有一颗色彩斑斓的宜居星球 `🌑`，星际移民 `👨‍🚀` 必须穿戴**基地**发放的防辐射服才能生存。阿狸 `🦊` 驾驶星际飞行器 `🚀` 降临此地，快帮它在限定时间内使用**轮盘**移动**找到基地**获取防辐射服吧！
 
 ![logo](./images/logo.png)
 
@@ -14,21 +14,21 @@
 
 ## 效果
 
-* **游戏玩法**：点击开始游戏按钮，通过操作屏幕底部轮盘来移动阿狸，在倒计时限定时间内找到基地。
-* **主线任务**：限定时间内找到庇护所。
-* **支线任务**：自由探索开放世界。
+- **游戏玩法**：点击开始游戏按钮，通过操作屏幕底部轮盘来移动阿狸，在倒计时限定时间内找到基地。
+- **主线任务**：限定时间内找到庇护所。
+- **支线任务**：自由探索开放世界。
 
 ![mobile](./images/mobile.png)
 
 **在线预览**：
 
-* `👀` 地址1：<https://3d-eosin.vercel.app/#/metaverse>
-* `👀` 地址2：<https://dragonir.github.io/3d/#/metaverse>
+- `👀` 地址 1：<https://3d-eosin.vercel.app/#/metaverse>
+- `👀` 地址 2：<https://jojo-cpu.github.io/3d/#/metaverse>
 
 已适配:
 
-* `💻` `PC` 端
-* `📱` 移动端
+- `💻` `PC` 端
+- `📱` 移动端
 
 > `🚩` 小提示：站得越高看得越远，隐隐约约听说基地位于初始位置的**西面**，开始时应该向左前方前进哦。
 
@@ -57,28 +57,44 @@ import JoyStick from './scripts/JoyStick';
 页面结构比较简单，`.webgl` 用于渲染 `WEBGL`；`.tool` 是游戏内的工具栏，用于重置游戏和显示一些提示语；`.loading` 是游戏加载页面，用来显示游戏加载进度、介绍游戏规则、显示游戏开始按钮；`.result` 是游戏结果页面，用于显示游戏成功或失败结果，并提供**再试一次**和**自由探索**两个按钮 `🔘`。
 
 ```js
-(<div id="metaverse">
-  <canvas className='webgl'></canvas>
-  <div className='tool'>
-    <div className='countdown'>{ this.state.countdown }</div>
-    <button className='reset_button' onClick={this.resetGame}>时光倒流</button>
-    <p className='hint'>站得越高看得越远</p>
+<div id="metaverse">
+  <canvas className="webgl"></canvas>
+  <div className="tool">
+    <div className="countdown">{this.state.countdown}</div>
+    <button className="reset_button" onClick={this.resetGame}>
+      时光倒流
+    </button>
+    <p className="hint">站得越高看得越远</p>
   </div>
-  { this.state.showLoading ? (<div className='loading'>
-    <div className='box'>
-      <p className='progress'>{this.state.loadingProcess} %</p>
-      <p className='description'>游戏描述</p>
-      <button className='start_button' style={{'visibility': this.state.loadingProcess === 100 ? 'visible' : 'hidden'}} onClick={this.startGame}>开始游戏</button>
+  {this.state.showLoading ? (
+    <div className="loading">
+      <div className="box">
+        <p className="progress">{this.state.loadingProcess} %</p>
+        <p className="description">游戏描述</p>
+        <button className="start_button" style={{ visibility: this.state.loadingProcess === 100 ? 'visible' : 'hidden' }} onClick={this.startGame}>
+          开始游戏
+        </button>
+      </div>
     </div>
-  </div>) : '' }
-  { this.state.showResult ? (<div className='result'>
-    <div className='box'>
-      <p className='text'>{ this.state.resultText }</p>
-      <button className='button' onClick={this.resetGame}>再试一次</button>
-      <button className='button' onClick={this.discover}>自由探索</button>
+  ) : (
+    ''
+  )}
+  {this.state.showResult ? (
+    <div className="result">
+      <div className="box">
+        <p className="text">{this.state.resultText}</p>
+        <button className="button" onClick={this.resetGame}>
+          再试一次
+        </button>
+        <button className="button" onClick={this.discover}>
+          自由探索
+        </button>
+      </div>
     </div>
-  </div>) : '' }
-</div>)
+  ) : (
+    ''
+  )}
+</div>
 ```
 
 ### 数据初始化
@@ -92,8 +108,8 @@ state = {
   showResult: false,
   resultText: '失败',
   countdown: 60,
-  freeDiscover: false
-}
+  freeDiscover: false,
+};
 ```
 
 ### 场景初始化
@@ -104,7 +120,7 @@ state = {
 const renderer = new THREE.WebGLRenderer({
   canvas: document.querySelector('canvas.webgl'),
   antialias: true,
-  alpha: true
+  alpha: true,
 });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -112,12 +128,12 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 const scene = new THREE.Scene();
 // 添加主相机
-const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, .01, 100000);
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 100000);
 camera.position.set(1, 1, -1);
 camera.lookAt(scene.position);
 // 添加环境光
-const ambientLight = new THREE.AmbientLight(0xffffff, .4);
-scene.add(ambientLight)
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+scene.add(ambientLight);
 // 添加平行光
 var light = new THREE.DirectionalLight(0xffffff, 1);
 light.position.set(1, 1, 1).normalize();
@@ -128,10 +144,10 @@ scene.add(light);
 
 本文使用了 `THREE.PCFSoftShadowMap` 以开启效果更加柔和的阴影，`Three.js` 提供以下几种阴影类型：
 
-* `THREE.BasicShadowMap`：提供未经过滤的阴影贴图，性能最快，但质量最低。
-* `THREE.PCFShadowMap`：使用 `Percentage-Closer Filtering (PCF)` 算法过滤阴影贴图，是默认类型。
-* `THREE.PCFSoftShadowMap`：使用 `PCF` 算法过滤的更加柔和的阴影贴图，尤其是在使用低分辨率阴影贴图时。
-* `THREE.VSMShadowMap`：使用方差阴影贴图 `VSM` 算法过滤的阴影贴图。 使用 `VSMShadowMap` 时，所有阴影接收者也会投射阴影。
+- `THREE.BasicShadowMap`：提供未经过滤的阴影贴图，性能最快，但质量最低。
+- `THREE.PCFShadowMap`：使用 `Percentage-Closer Filtering (PCF)` 算法过滤阴影贴图，是默认类型。
+- `THREE.PCFSoftShadowMap`：使用 `PCF` 算法过滤的更加柔和的阴影贴图，尤其是在使用低分辨率阴影贴图时。
+- `THREE.VSMShadowMap`：使用方差阴影贴图 `VSM` 算法过滤的阴影贴图。 使用 `VSMShadowMap` 时，所有阴影接收者也会投射阴影。
 
 ### 创建世界
 
@@ -146,15 +162,15 @@ world.broadphase = new CANNON.SAPBroadphase(world);
 world.gravity.set(0, -10, 0);
 // 创建默认联系材质
 world.defaultContactMaterial.friction = 0;
-const groundMaterial = new CANNON.Material("groundMaterial");
-const wheelMaterial = new CANNON.Material("wheelMaterial");
+const groundMaterial = new CANNON.Material('groundMaterial');
+const wheelMaterial = new CANNON.Material('wheelMaterial');
 const wheelGroundContactMaterial = new CANNON.ContactMaterial(wheelMaterial, groundMaterial, {
   // 摩擦系数
   friction: 0,
   // 恢复系数
   restitution: 0,
   // 接触刚度
-  contactEquationStiffness: 1000
+  contactEquationStiffness: 1000,
 });
 world.addContactMaterial(wheelGroundContactMaterial);
 ```
@@ -175,15 +191,18 @@ uniforms.map.value = textureLoader.load(snowflakeTexture);
 for (let i = 0; i < 1000; i++) {
   sparkGeometry.vertices.push(new THREE.Vector3());
 }
-const sparks = new THREE.Points(new THREE.Geometry(), new THREE.PointsMaterial({
-  size: 2,
-  color: new THREE.Color(0xffffff),
-  map: uniforms.map.value,
-  blending: THREE.AdditiveBlending,
-  depthWrite: false,
-  transparent: true,
-  opacity: 0.75
-}));
+const sparks = new THREE.Points(
+  new THREE.Geometry(),
+  new THREE.PointsMaterial({
+    size: 2,
+    color: new THREE.Color(0xffffff),
+    map: uniforms.map.value,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+    transparent: true,
+    opacity: 0.75,
+  })
+);
 sparks.scale.set(1, 1, 1);
 sparks.geometry.vertices.map(spark => {
   spark.y = randnum(30, 40);
@@ -204,7 +223,11 @@ scene.add(sparks);
 
 ```js
 const cannonHelper = new CannonHelper(scene);
-var sizeX = 128, sizeY = 128, minHeight = 0, maxHeight = 60, check = null;
+var sizeX = 128,
+  sizeY = 128,
+  minHeight = 0,
+  maxHeight = 60,
+  check = null;
 Promise.all([
   // 加载高度图
   img2matrix.fromUrl(heightMapImage, sizeX, sizeY, minHeight, maxHeight)(),
@@ -216,7 +239,7 @@ Promise.all([
   const terrainShape = new CANNON.Heightfield(matrix, { elementSize: 10 });
   terrainBody.addShape(terrainShape);
   // 地形位置
-  terrainBody.position.set(-sizeX * terrainShape.elementSize / 2, -10, sizeY * terrainShape.elementSize / 2);
+  terrainBody.position.set((-sizeX * terrainShape.elementSize) / 2, -10, (sizeY * terrainShape.elementSize) / 2);
   // 设置从轴角度
   terrainBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
   world.add(terrainBody);
@@ -239,11 +262,11 @@ Promise.all([
     target.position.y = intersects && intersects[0] ? intersects[0].point.y + 0.1 : 30;
     var raycaster2 = new THREE.Raycaster(shelterLocation.position, new THREE.Vector3(0, -1, 0));
     var intersects2 = raycaster2.intersectObject(terrainBody.threemesh.children[0]);
-    shelterLocation.position.y = intersects2 && intersects2[0] ? intersects2[0].point.y + .5 : 30;
+    shelterLocation.position.y = intersects2 && intersects2[0] ? intersects2[0].point.y + 0.5 : 30;
     shelterLight.position.y = shelterLocation.position.y + 50;
-    shelterLight.position.x = shelterLocation.position.x + 5
+    shelterLight.position.x = shelterLocation.position.x + 5;
     shelterLight.position.z = shelterLocation.position.z;
-  }
+  };
 });
 ```
 
@@ -254,14 +277,14 @@ Promise.all([
 本示例中凹凸不平的地形是通过 `CANNON.Heightfield` 实现的，它是 `Cannon.js` 物理引擎的高度场。在物理学中把**某个物理量在空间中一个区域内的分布**称为**场**，高度场就是与高度相关的场。`Heightfield` 的高度就是关于两个变量的函数，可以表达为 `HEIGHT(i,j)`。
 
 ```js
-Heightfield(data, options)
+Heightfield(data, options);
 ```
 
-* `data` 是一个 `y值` 数组，将用于构建地形。
-* `options` 是一个配置项，有三个可配置参数：
-  * `minValue` 是数据数组中数据点的最小值。如果未给出，将自动计算。
-  * `maxValue` 最大值。
-  * `elementSize` 是 `x轴` 方向上数据点之间的世界间距。
+- `data` 是一个 `y值` 数组，将用于构建地形。
+- `options` 是一个配置项，有三个可配置参数：
+  - `minValue` 是数据数组中数据点的最小值。如果未给出，将自动计算。
+  - `maxValue` 最大值。
+  - `elementSize` 是 `x轴` 方向上数据点之间的世界间距。
 
 ### 加载进度管理
 
@@ -270,7 +293,7 @@ Heightfield(data, options)
 ```js
 const loadingManager = new THREE.LoadingManager();
 loadingManager.onProgress = async (url, loaded, total) => {
-  this.setState({ loadingProcess: Math.floor(loaded / total * 100) });
+  this.setState({ loadingProcess: Math.floor((loaded / total) * 100) });
 };
 ```
 
@@ -282,10 +305,13 @@ loadingManager.onProgress = async (url, loaded, total) => {
 
 ```js
 const shelterGeometry = new THREE.BoxBufferGeometry(0.15, 2, 0.15);
-const shelterLocation = new THREE.Mesh(shelterGeometry, new THREE.MeshNormalMaterial({
-  transparent: true,
-  opacity: 0
-}));
+const shelterLocation = new THREE.Mesh(
+  shelterGeometry,
+  new THREE.MeshNormalMaterial({
+    transparent: true,
+    opacity: 0,
+  })
+);
 shelterLocation.position.set(this.shelterPosition.x, this.shelterPosition.y, this.shelterPosition.z);
 shelterLocation.rotateY(Math.PI);
 scene.add(shelterLocation);
@@ -295,8 +321,8 @@ gltfLoader.load(Shelter, mesh => {
     child.castShadow = true;
   });
   mesh.scene.scale.set(5, 5, 5);
-  mesh.scene.position.y = -.5;
-  shelterLocation.add(mesh.scene)
+  mesh.scene.position.y = -0.5;
+  shelterLocation.add(mesh.scene);
 });
 // 添加光源
 const shelterPointLight = new THREE.PointLight(0x1089ff, 2);
@@ -316,15 +342,20 @@ scene.add(shelterLight);
 狐狸 `🦊` 模型的加载也是类似的，需要先创建一个目标网格，后续用于地形检测，然后把狐狸 `🦊` 模型添加到目标网格上。狐狸 `🦊` 模型完成加载后，需要保存它的 `clip1`、 `clip1` 两种动画效果，后续需要通过判断轮盘 `🕹` 的移动状态来判断播放哪种动画。最后添加一个 `DirectionalLight` `💡` 光源来产生阴影。
 
 ```js
-var geometry = new THREE.BoxBufferGeometry(.5, 1, .5);
-geometry.applyMatrix4(new THREE.Matrix4().makeTranslation(0, .5, 0));
-const target = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial({
-  transparent: true,
-  opacity: 0
-}));
+var geometry = new THREE.BoxBufferGeometry(0.5, 1, 0.5);
+geometry.applyMatrix4(new THREE.Matrix4().makeTranslation(0, 0.5, 0));
+const target = new THREE.Mesh(
+  geometry,
+  new THREE.MeshNormalMaterial({
+    transparent: true,
+    opacity: 0,
+  })
+);
 scene.add(target);
 
-var mixers = [], clip1, clip2;
+var mixers = [],
+  clip1,
+  clip2;
 const gltfLoader = new GLTFLoader(loadingManager);
 gltfLoader.load(foxModel, mesh => {
   mesh.scene.traverse(child => {
@@ -335,7 +366,7 @@ gltfLoader.load(foxModel, mesh => {
   });
   var player = mesh.scene;
   player.position.set(this.playPosition.x, this.playPosition.y, this.playPosition.z);
-  player.scale.set(.008, .008, .008);
+  player.scale.set(0.008, 0.008, 0.008);
   target.add(player);
   var mixer = new THREE.AnimationMixer(player);
   clip1 = mixer.clipAction(mesh.animations[0]);
@@ -344,7 +375,7 @@ gltfLoader.load(foxModel, mesh => {
   mixers.push(mixer);
 });
 
-const directionalLight = new THREE.DirectionalLight(new THREE.Color(0xffffff), .5);
+const directionalLight = new THREE.DirectionalLight(new THREE.Color(0xffffff), 0.5);
 directionalLight.position.set(0, 1, 0);
 directionalLight.castShadow = true;
 directionalLight.target = target;
@@ -359,13 +390,15 @@ target.add(directionalLight);
 
 ```js
 var setup = { forward: 0, turn: 0 };
-new JoyStick({ onMove: (forward, turn) => {
-  setup.forward = forward;
-  setup.turn = -turn;
-}});
+new JoyStick({
+  onMove: (forward, turn) => {
+    setup.forward = forward;
+    setup.turn = -turn;
+  },
+});
 const updateDrive = (forward = setup.forward, turn = setup.turn) => {
   let maxSteerVal = 0.05;
-  let maxForce = .15;
+  let maxForce = 0.15;
   let force = maxForce * forward;
   let steer = maxSteerVal * turn;
   if (forward !== 0) {
@@ -377,7 +410,7 @@ const updateDrive = (forward = setup.forward, turn = setup.turn) => {
     clip1 && clip1.play();
   }
   target.rotateY(steer);
-}
+};
 // 生成第三人称视角
 const followCamera = new THREE.Object3D();
 followCamera.position.copy(camera.position);
@@ -386,9 +419,9 @@ followCamera.parent = target;
 const updateCamera = () => {
   if (followCamera) {
     camera.position.lerp(followCamera.getWorldPosition(new THREE.Vector3()), 0.1);
-    camera.lookAt(target.position.x, target.position.y + .5, target.position.z);
+    camera.lookAt(target.position.x, target.position.y + 0.5, target.position.z);
   }
-}
+};
 ```
 
 ![preview](./images/preview.png)
@@ -425,12 +458,17 @@ const animate = () => {
 页面产生缩放时，更新渲染场景 `🏔` 和相机 `📷`。
 
 ```js
-window.addEventListener('resize', () => {
-  var width = window.innerWidth, height = window.innerHeight;
-  renderer.setSize(width, height);
-  camera.aspect = width / height;
-  camera.updateProjectionMatrix();
-}, false);
+window.addEventListener(
+  'resize',
+  () => {
+    var width = window.innerWidth,
+      height = window.innerHeight;
+    renderer.setSize(width, height);
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+  },
+  false
+);
 ```
 
 到此，游戏三维世界 `🌏` 已经全部实现完毕了。
@@ -443,43 +481,49 @@ window.addEventListener('resize', () => {
 
 ```js
 startGame = () => {
-  this.setState({
-    showLoading : false,
-    showResult: false,
-    countdown: 60,
-    resultText: '失败',
-    freeDiscover: false
-  },() => {
-    this.interval = setInterval(() => {
-      if (this.state.countdown > 0) {
-        this.setState({
-          countdown: --this.state.countdown
-        });
-      } else {
-        clearInterval(this.interval)
-        this.setState({
-          showResult: true
-        });
-      }
-    }, 1000);
-  });
-}
+  this.setState(
+    {
+      showLoading: false,
+      showResult: false,
+      countdown: 60,
+      resultText: '失败',
+      freeDiscover: false,
+    },
+    () => {
+      this.interval = setInterval(() => {
+        if (this.state.countdown > 0) {
+          this.setState({
+            countdown: --this.state.countdown,
+          });
+        } else {
+          clearInterval(this.interval);
+          this.setState({
+            showResult: true,
+          });
+        }
+      }, 1000);
+    }
+  );
+};
 resetGame = () => {
   this.player.position.set(this.playPosition.x, this.playPosition.y, this.playPosition.z);
   this.target.rotation.set(0, 0, 0);
   this.target.position.set(0, 0, 0);
   this.camera.position.set(1, 1, -1);
   this.startGame();
-}
+};
 discover = () => {
-  this.setState({
-    freeDiscover: true,
-    showResult: false,
-    countdown: 60
-  }, () => {
-    clearInterval(this.interval);
-  });
-}
+  this.setState(
+    {
+      freeDiscover: true,
+      showResult: false,
+      countdown: 60,
+    },
+    () => {
+      clearInterval(this.interval);
+    }
+  );
+};
 ```
 
 ### 毛玻璃效果
@@ -498,30 +542,30 @@ filter drop-shadow(0px 1px 1px rgba(0, 0, 0, .25))
 
 本文涉及到的新知识点主要包括：
 
-* `Three.js` 阴影类型
-* 创建粒子系统
-* `cannon.js` 基本用法
-* 使用 `cannon.js` 高度场 `Heightfield` 创建地形
-* 通过轮盘移动控制模型动画
+- `Three.js` 阴影类型
+- 创建粒子系统
+- `cannon.js` 基本用法
+- 使用 `cannon.js` 高度场 `Heightfield` 创建地形
+- 通过轮盘移动控制模型动画
 
 > 想了解场景初始化、光照、阴影、基础几何体、网格、材质及其他**Three.js**的相关知识，可阅读我往期文章。**转载请注明原文地址和作者**。如果觉得文章对你有帮助，不要忘了**一键三连哦 👍**。
 
 ## 附录
 
-* [1]. [Three.js 火焰效果实现艾尔登法环动态logo](https://juejin.cn/post/7077726955528781832)
-* [2]. [Three.js 实现神奇的3D文字悬浮效果](https://juejin.cn/post/7072899771819622413)
-* [3]. [Three.js 实现让二维图片具有3D效果](https://juejin.cn/post/7067344398912061454)
-* [4]. [Three.js 实现2022冬奥主题3D趣味页面，冰墩墩 🐼](https://juejin.cn/post/7060292943608807460)
-* [5]. [Three.js 制作一个专属3D奖牌](https://juejin.cn/post/7055079293247815711)
-* [6]. [Three.js 实现虎年春节3D创意页面](https://juejin.cn/post/7051745314914435102)
-* [7]. [Three.js 实现脸书元宇宙3D动态Logo](https://juejin.cn/post/7031893833163997220)
-* [8]. [Three.js 实现3D全景侦探小游戏](https://juejin.cn/post/7042298964468564005)
-* [9]. [Three.js 实现炫酷的酸性风格3D页面](https://juejin.cn/post/7012996721693163528)
+- [1]. [Three.js 火焰效果实现艾尔登法环动态 logo](https://juejin.cn/post/7077726955528781832)
+- [2]. [Three.js 实现神奇的 3D 文字悬浮效果](https://juejin.cn/post/7072899771819622413)
+- [3]. [Three.js 实现让二维图片具有 3D 效果](https://juejin.cn/post/7067344398912061454)
+- [4]. [Three.js 实现 2022 冬奥主题 3D 趣味页面，冰墩墩 🐼](https://juejin.cn/post/7060292943608807460)
+- [5]. [Three.js 制作一个专属 3D 奖牌](https://juejin.cn/post/7055079293247815711)
+- [6]. [Three.js 实现虎年春节 3D 创意页面](https://juejin.cn/post/7051745314914435102)
+- [7]. [Three.js 实现脸书元宇宙 3D 动态 Logo](https://juejin.cn/post/7031893833163997220)
+- [8]. [Three.js 实现 3D 全景侦探小游戏](https://juejin.cn/post/7042298964468564005)
+- [9]. [Three.js 实现炫酷的酸性风格 3D 页面](https://juejin.cn/post/7012996721693163528)
 
 ## 参考资料
 
-* [1] [threejs.org](https://threejs.org/)
-* [2] [cannonjs.org](http://www.cannonjs.org/)
-* [3] [heightmap-generator](http://heightmap-generator.com/)
-* [4] [three.js cannon.js物理引擎之Heightfield](https://www.mrguo.link/article?id=53)
-* [5] [Joggin' version 0.1](https://codepen.io/b29/pen/JjyJWEg)
+- [1] [threejs.org](https://threejs.org/)
+- [2] [cannonjs.org](http://www.cannonjs.org/)
+- [3] [heightmap-generator](http://heightmap-generator.com/)
+- [4] [three.js cannon.js 物理引擎之 Heightfield](https://www.mrguo.link/article?id=53)
+- [5] [Joggin' version 0.1](https://codepen.io/b29/pen/JjyJWEg)

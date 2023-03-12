@@ -1,4 +1,4 @@
-# Three.js 实现虎年春节3D创意页面
+# Three.js 实现虎年春节 3D 创意页面
 
 ![banner](./images/banner.gif)
 
@@ -8,18 +8,18 @@
 
 ## 实现
 
-> `👀` 在线预览，已适配移动端：<https://dragonir.github.io/3d/#/lunar>
+> `👀` 在线预览，已适配移动端：<https://jojo-cpu.github.io/3d/#/lunar>
 
 ### 引入资源
 
 其中 `GLTFLoader`、`FBXLoader` 用于加在模型、`OrbitControls` 用户镜头轨道控制、`TWEEN` 用于生成补间动画。
 
 ```js
-import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { TWEEN } from "three/examples/jsm/libs/tween.module.min.js";
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { TWEEN } from 'three/examples/jsm/libs/tween.module.min.js';
 ```
 
 ### 场景初始化
@@ -64,9 +64,9 @@ scene.add(spotLight);
 
 **构造函数**：`Fog(color, near, far)`。
 
-* `color` 属性: 表示雾的颜色，比如设置为红色，场景中远处物体为黑色，场景中最近处距离物体是自身颜色，最远和最近之间的物体颜色是物体本身颜色和雾颜色的混合效果。
-* `near` 属性：表示应用雾化效果的最小距离，距离活动摄像机长度小于 `near` 的物体将不会被雾所影响。
-* `far` 属性：表示应用雾化效果的最大距离，距离活动摄像机长度大于 `far` 的物体将不会被雾所影响。
+- `color` 属性: 表示雾的颜色，比如设置为红色，场景中远处物体为黑色，场景中最近处距离物体是自身颜色，最远和最近之间的物体颜色是物体本身颜色和雾颜色的混合效果。
+- `near` 属性：表示应用雾化效果的最小距离，距离活动摄像机长度小于 `near` 的物体将不会被雾所影响。
+- `far` 属性：表示应用雾化效果的最大距离，距离活动摄像机长度大于 `far` 的物体将不会被雾所影响。
 
 ### 创建地面
 
@@ -74,7 +74,7 @@ scene.add(spotLight);
 
 ```js
 var planeGeometry = new THREE.PlaneGeometry(100, 100);
-var planeMaterial = new THREE.ShadowMaterial({ opacity: .5 });
+var planeMaterial = new THREE.ShadowMaterial({ opacity: 0.5 });
 var plane = new THREE.Mesh(planeGeometry, planeMaterial);
 plane.rotation.x = -0.5 * Math.PI;
 plane.position.set(0, -8, 0);
@@ -88,22 +88,25 @@ scene.add(plane);
 
 **构造函数**： `ShadowMaterial(parameters: Object)`
 
-* `parameters`：（可选）用于定义材质外观的对象，具有一个或多个属性。
+- `parameters`：（可选）用于定义材质外观的对象，具有一个或多个属性。
 
 **特殊属性**：
 
-* `.isShadowMaterial[Boolean]`：用于检查此类或派生类是否为阴影材质。默认值为 `true`。因为其通常用在内部优化，所以不应该更改该属性值。
-* `.transparent[Boolean]`：定义此材质是否透明。默认值为 `true`。
+- `.isShadowMaterial[Boolean]`：用于检查此类或派生类是否为阴影材质。默认值为 `true`。因为其通常用在内部优化，所以不应该更改该属性值。
+- `.transparent[Boolean]`：定义此材质是否透明。默认值为 `true`。
 
 ### 创建魔法阵
 
 在老虎 `🐅` 底部地面创建一个炫酷的旋转**自发光**圆形魔法阵。
 
 ```js
-cycle = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), new THREE.MeshPhongMaterial({
-  map: new THREE.TextureLoader().load(cycleTexture),
-  transparent: true
-}));
+cycle = new THREE.Mesh(
+  new THREE.PlaneGeometry(40, 40),
+  new THREE.MeshPhongMaterial({
+    map: new THREE.TextureLoader().load(cycleTexture),
+    transparent: true,
+  })
+);
 cycle.rotation.x = -0.5 * Math.PI;
 cycle.position.set(0, -9, 0);
 cycle.receiveShadow = true;
@@ -120,16 +123,16 @@ scene.add(cycle);
 
 **构造函数**：`MeshPhongMaterial(parameters: Object)`
 
-* `parameters`：（可选）用于定义材质外观的对象，具有一个或多个属性。
+- `parameters`：（可选）用于定义材质外观的对象，具有一个或多个属性。
 
 **特殊属性**：
 
-* `.emissive[Color]`：材质的放射（光）颜色，基本上是不受其他光照影响的固有颜色。默认为黑色。
-* `.emissiveMap[Texture]`：设置放射（发光）贴图。默认值为 `null`。放射贴图颜色由放射颜色和强度所调节。 如果你有一个放射贴图，请务必将放射颜色设置为黑色以外的其他颜色。
-* `.emissiveIntensity[Float]`：放射光强度。调节发光颜色。默认为 `1`。
-* `.shininess[Float]`：`specular` 高亮的程度，越高的值越闪亮。默认值为 `30`。
-* `.specular[Color]`：材质的高光颜色。默认值为 `0x111111` 的颜色 `Color`。这定义了材质的光泽度和光泽的颜色。
-* `.specularMap[Texture]`：镜面反射贴图值会影响镜面高光以及环境贴图对表面的影响程度。默认值为 `null`。
+- `.emissive[Color]`：材质的放射（光）颜色，基本上是不受其他光照影响的固有颜色。默认为黑色。
+- `.emissiveMap[Texture]`：设置放射（发光）贴图。默认值为 `null`。放射贴图颜色由放射颜色和强度所调节。 如果你有一个放射贴图，请务必将放射颜色设置为黑色以外的其他颜色。
+- `.emissiveIntensity[Float]`：放射光强度。调节发光颜色。默认为 `1`。
+- `.shininess[Float]`：`specular` 高亮的程度，越高的值越闪亮。默认值为 `30`。
+- `.specular[Color]`：材质的高光颜色。默认值为 `0x111111` 的颜色 `Color`。这定义了材质的光泽度和光泽的颜色。
+- `.specularMap[Texture]`：镜面反射贴图值会影响镜面高光以及环境贴图对表面的影响程度。默认值为 `null`。
 
 > 与 `MeshLambertMaterial` 中使用的 `Lambertian` 模型不同，该材质可以模拟具有镜面高光的光泽表面（例如涂漆木材）。使用 `Phong` 着色模型计算着色时，会计算每个像素的阴影，与 `MeshLambertMaterial` 使用的 `Gouraud` 模型相比，该模型的结果更准确，但代价是牺牲一些性能。
 > `MeshStandardMaterial` 和 `MeshPhysicalMaterial` 也使用这个着色模型。在 `MeshStandardMaterial` 或 `MeshPhysicalMaterial` 上使用此材质时，性能通常会更高 ，但会牺牲一些图形精度。
@@ -147,21 +150,21 @@ fbxLoader.load(textModel, mesh => {
       child.castShadow = true;
       child.receiveShadow = true;
       // 调节材质的金属度、粗糙度、颜色等样式
-      child.material.metalness = .2;
-      child.material.roughness = .8;
+      child.material.metalness = 0.2;
+      child.material.roughness = 0.8;
       child.material.color = new THREE.Color(0x111111);
     }
   });
   mesh.position.set(4, 6, -8);
   mesh.rotation.set(-80, 0, 0);
-  mesh.scale.set(.32, .32, .32);
+  mesh.scale.set(0.32, 0.32, 0.32);
   group.add(mesh);
 });
 ```
 
 ![text_0](./images/text_0.png)
 
-> `📹` 哔哩哔哩 `3D` 文字生成教程传送门：[iBlender中文版插件 老外教你用汉字中文字体 Font 3D Chinese And Japanese Characters Blender 插件教程](https://www.bilibili.com/video/BV1Sv411871T?from=search&seid=3205263975436057796&spm_id_from=333.337.0.0)
+> `📹` 哔哩哔哩 `3D` 文字生成教程传送门：[iBlender 中文版插件 老外教你用汉字中文字体 Font 3D Chinese And Japanese Characters Blender 插件教程](https://www.bilibili.com/video/BV1Sv411871T?from=search&seid=3205263975436057796&spm_id_from=333.337.0.0)
 
 ### 老虎模型
 
@@ -171,11 +174,11 @@ fbxLoader.load(textModel, mesh => {
 const manager = new THREE.LoadingManager();
 manager.onStart = (url, loaded, total) => {};
 manager.onLoad = () => {};
-manager.onProgress = async(url, loaded, total) => {
-  if (Math.floor(loaded / total * 100) === 100) {
-    this.setState({ loadingProcess: Math.floor(loaded / total * 100) });
+manager.onProgress = async (url, loaded, total) => {
+  if (Math.floor((loaded / total) * 100) === 100) {
+    this.setState({ loadingProcess: Math.floor((loaded / total) * 100) });
   } else {
-    this.setState({ loadingProcess: Math.floor(loaded / total * 100) });
+    this.setState({ loadingProcess: Math.floor((loaded / total) * 100) });
   }
 };
 const gltfLoader = new GLTFLoader(manager);
@@ -184,15 +187,15 @@ gltfLoader.load(tigerModel, mesh => {
     if (child.isMesh) {
       child.castShadow = true;
       child.material.metalness = 0;
-      child.material.roughness = .8;
+      child.material.roughness = 0.8;
       child.material.transparent = true;
       child.material.side = THREE.DoubleSide;
       child.material.color = new THREE.Color(0xffffff);
     }
   });
-  mesh.scene.rotation.y = Math.PI * 9 / 8;
+  mesh.scene.rotation.y = (Math.PI * 9) / 8;
   mesh.scene.position.set(0, -4, 2);
-  mesh.scene.scale.set(.75, .75, .75);
+  mesh.scene.scale.set(0.75, 0.75, 0.75);
   // 💡 加载模型自身动画
   let meshAnimation = mesh.animations[0];
   mixer = new THREE.AnimationMixer(mesh.scene);
@@ -200,7 +203,7 @@ gltfLoader.load(tigerModel, mesh => {
   let clipAction = mixer.clipAction(animationClip).play();
   animationClip = clipAction.getClip();
   group.add(mesh.scene);
-  scene.add(group)
+  scene.add(group);
 });
 ```
 
@@ -212,16 +215,16 @@ gltfLoader.load(tigerModel, mesh => {
 
 **构造方法**：`LoadingManager(onLoad: Function, onProgress: Function, onError: Function)`
 
-* `onLoad`：可选，所有加载器加载完成后，将调用此函数。
-* `onProgress`：可选，当每个项目完成后，将调用此函数。
-* `onError`：可选，当一个加载器遇到错误时，将调用此函数。
+- `onLoad`：可选，所有加载器加载完成后，将调用此函数。
+- `onProgress`：可选，当每个项目完成后，将调用此函数。
+- `onError`：可选，当一个加载器遇到错误时，将调用此函数。
 
 **属性**：
 
-* `.onStart[Function]`：加载开始时被调用。参数: `url` 被加载的项的`url`；`itemsLoaded` 目前已加载项的个数；`itemsTotal` 总共所需要加载项的个数。此方法默认未定义。
-* `.onLoad[Function]`：所有的项加载完成后将调用此函数。默认情况下，此方法时未定义的，除非在构造函数中进行传递。
-* `.onProgress[Function]`：此方法加载每一个项，加载完成时进行调用。参数：`url` 被加载的项的 `url`；`itemsLoaded` 目前已加载项的个数；`itemsTotal` 总共所需要加载项的个数。默认情况下，此方法时未定义的，除非在构造函数中进行传递。
-* `.onError[Function]`：此方法将在任意项加载错误时调用。参数：`url` 所加载出错误的项的 `url`。默认情况下，此方法时未定义的，除非在构造函数中进行传递。
+- `.onStart[Function]`：加载开始时被调用。参数: `url` 被加载的项的`url`；`itemsLoaded` 目前已加载项的个数；`itemsTotal` 总共所需要加载项的个数。此方法默认未定义。
+- `.onLoad[Function]`：所有的项加载完成后将调用此函数。默认情况下，此方法时未定义的，除非在构造函数中进行传递。
+- `.onProgress[Function]`：此方法加载每一个项，加载完成时进行调用。参数：`url` 被加载的项的 `url`；`itemsLoaded` 目前已加载项的个数；`itemsTotal` 总共所需要加载项的个数。默认情况下，此方法时未定义的，除非在构造函数中进行传递。
+- `.onError[Function]`：此方法将在任意项加载错误时调用。参数：`url` 所加载出错误的项的 `url`。默认情况下，此方法时未定义的，除非在构造函数中进行传递。
 
 ### 添加镜头移动补间动画
 
@@ -238,14 +241,17 @@ const Animations = {
       y2: controls.target.y,
       z2: controls.target.z,
     });
-    tween.to({
-      x1: newP.x,
-      y1: newP.y,
-      z1: newP.z,
-      x2: newT.x,
-      y2: newT.y,
-      z2: newT.z,
-    }, time);
+    tween.to(
+      {
+        x1: newP.x,
+        y1: newP.y,
+        z1: newP.z,
+        x2: newT.x,
+        y2: newT.y,
+        z2: newT.z,
+      },
+      time
+    );
     tween.onUpdate(function (object) {
       camera.position.x = object.x1;
       camera.position.y = object.y1;
@@ -262,7 +268,7 @@ const Animations = {
     tween.easing(TWEEN.Easing.Cubic.InOut);
     tween.start();
   },
-}
+};
 export default Animations;
 ```
 
@@ -279,19 +285,19 @@ Animations.animateCamera(camera, controls, { x: 0, y: 5, z: 21 }, { x: 0, y: 0, 
 **基本使用**：
 
 ```js
-var tween = new TWEEN.Tween({x: 1})     // position: {x: 1}
-.delay(100)                             // 等待100ms
-.to({x: 200}, 1000)                     // 1s时间，x到200
-.onUpdate(render)                       // 变更期间执行render方法
-.onComplete(() => {})                   // 动画完成
-.onStop(() => {})                       // 动画停止
-.start();                               // 开启动画
+var tween = new TWEEN.Tween({ x: 1 }) // position: {x: 1}
+  .delay(100) // 等待100ms
+  .to({ x: 200 }, 1000) // 1s时间，x到200
+  .onUpdate(render) // 变更期间执行render方法
+  .onComplete(() => {}) // 动画完成
+  .onStop(() => {}) // 动画停止
+  .start(); // 开启动画
 ```
 
 `📌` 要让动画真正动起来，需要在 `requestAnimationFrame` 中调用 `update` 方法。
 
 ```js
-TWEEN.update()
+TWEEN.update();
 ```
 
 **缓动类型**：
@@ -307,8 +313,8 @@ tween.easing(TWEEN.Easing.Cubic.InOut);
 `TWEEN.js` 支持链式调用，如在 `动画A` 结束后要执行 `动画B`，可以这样 `tweenA.chain(tweenB)` 利用链式调用创建往复来回循环的动画：
 
 ```js
-var tweenA = new TWEEN.Tween(position).to({x: 200}, 1000);
-var tweenB = new TWEEN.Tween(position).to({x: 0}, 1000);
+var tweenA = new TWEEN.Tween(position).to({ x: 200 }, 1000);
+var tweenB = new TWEEN.Tween(position).to({ x: 0 }, 1000);
 tweenA.chain(tweenB);
 tweenB.chain(tweenA);
 tweenA.start();
@@ -342,7 +348,7 @@ controls.maxZoom = Infinity;
 controls.minPolarAngle = 0;
 controls.maxPolarAngle = Math.PI;
 //水平方向视角限制，范围[-Math.PI, Math.PI]
-controls.minAzimuthAngle = - Infinity;
+controls.minAzimuthAngle = -Infinity;
 controls.maxAzimuthAngle = Infinity;
 //惯性滑动，滑动大小默认0.25，若开启，那么controls.update()需要加到动画循环函数中
 controls.enableDamping = false;
@@ -388,32 +394,19 @@ function animate() {
   // 控制器
   controls && controls.update();
   // 魔法阵
-  cycle && (cycle.rotation.z += .01);
+  cycle && (cycle.rotation.z += 0.01);
 }
 ```
 
-### Loading 页3D文字样式
+### Loading 页 3D 文字样式
 
 `3D` 文字样式主要通过叠加多层 `text-shadow` 实现的。
 
 ```css
 .loading {
   font-size: 64px;
-  color: #FFFFFF;
-  text-shadow:     0 1px 0 hsl(174,5%,80%),
-                   0 2px 0 hsl(174,5%,75%),
-                   0 3px 0 hsl(174,5%,70%),
-                   0 4px 0 hsl(174,5%,66%),
-                   0 5px 0 hsl(174,5%,64%),
-                   0 6px 0 hsl(174,5%,62%),
-                   0 7px 0 hsl(174,5%,61%),
-                   0 8px 0 hsl(174,5%,60%),
-                   0 0 5px rgba(0,0,0,.05),
-                  0 1px 3px rgba(0,0,0,.2),
-                  0 3px 5px rgba(0,0,0,.2),
-                 0 5px 10px rgba(0,0,0,.2),
-                0 10px 10px rgba(0,0,0,.2),
-                0 20px 20px rgba(0,0,0,.3);
+  color: #ffffff;
+  text-shadow: 0 1px 0 hsl(174, 5%, 80%), 0 2px 0 hsl(174, 5%, 75%), 0 3px 0 hsl(174, 5%, 70%), 0 4px 0 hsl(174, 5%, 66%), 0 5px 0 hsl(174, 5%, 64%), 0 6px 0 hsl(174, 5%, 62%), 0 7px 0 hsl(174, 5%, 61%), 0 8px 0 hsl(174, 5%, 60%), 0 0 5px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.2), 0 3px 5px rgba(0, 0, 0, 0.2), 0 5px 10px rgba(0, 0, 0, 0.2), 0 10px 10px rgba(0, 0, 0, 0.2), 0 20px 20px rgba(0, 0, 0, 0.3);
 }
 ```
 
@@ -429,19 +422,19 @@ function animate() {
 
 本文中主要涉及到的知识点包括：
 
-* `Fog` 场景雾化
-* `ShadowMaterial` 阴影材质
-* `MeshPhongMaterial` 网格材质
-* `LoadingManager` 加载器管理器
-* `TWEEN.js` 补间动画
-* `THREE.OrbitControls` 参数控制
-* `CSS` `3D` 文字样式
+- `Fog` 场景雾化
+- `ShadowMaterial` 阴影材质
+- `MeshPhongMaterial` 网格材质
+- `LoadingManager` 加载器管理器
+- `TWEEN.js` 补间动画
+- `THREE.OrbitControls` 参数控制
+- `CSS` `3D` 文字样式
 
 ## 附录
 
 想了解场景初始化、光照、阴影及其他网格几何体的相关知识，可阅读我的其他文章。如果觉得文章对你有帮助，不要忘了 `一键三连😂`。
 
-* [1]. [Three.js 实现虎年春节3D创意页面](https://juejin.cn/post/7051745314914435102)
-* [2]. [Three.js 实现脸书元宇宙3D动态Logo](https://juejin.cn/post/7031893833163997220)
-* [3]. [Three.js 实现3D全景侦探小游戏](https://juejin.cn/post/7042298964468564005)
-* [4]. [使用Three.js实现炫酷的酸性风格3D页面](https://juejin.cn/post/7012996721693163528)
+- [1]. [Three.js 实现虎年春节 3D 创意页面](https://juejin.cn/post/7051745314914435102)
+- [2]. [Three.js 实现脸书元宇宙 3D 动态 Logo](https://juejin.cn/post/7031893833163997220)
+- [3]. [Three.js 实现 3D 全景侦探小游戏](https://juejin.cn/post/7042298964468564005)
+- [4]. [使用 Three.js 实现炫酷的酸性风格 3D 页面](https://juejin.cn/post/7012996721693163528)

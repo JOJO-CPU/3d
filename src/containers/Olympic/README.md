@@ -1,12 +1,12 @@
-# Three.js 实现2022冬奥主题3D趣味页面，一只萌萌的冰墩墩送给大家 🐼
+# Three.js 实现 2022 冬奥主题 3D 趣味页面，一只萌萌的冰墩墩送给大家 🐼
 
 ![banner](./images/banner.gif)
 
-> 声明：本文涉及奥运元素3D模型仅用于个人学习、研究和欣赏，请勿二次修改、非法传播、转载、出版、商用、及进行其他获利行为。
+> 声明：本文涉及奥运元素 3D 模型仅用于个人学习、研究和欣赏，请勿二次修改、非法传播、转载、出版、商用、及进行其他获利行为。
 
 ## 背景
 
-迎冬奥，一起向未来！**2022冬奥会**马上就要开始了，本文使用 `Three.js + React` 技术栈，实现冬日和奥运元素，制作了一个充满趣味和纪念意义的冬奥主题 `3D` 页面。本文涉及到的知识点主要包括：`TorusGeometry` 圆环面、`MeshLambertMaterial` 非光泽表面材质、`MeshDepthMaterial` 深度网格材质、`custromMaterial` 自定义材质、`Points` 粒子、`PointsMaterial` 点材质等。
+迎冬奥，一起向未来！**2022 冬奥会**马上就要开始了，本文使用 `Three.js + React` 技术栈，实现冬日和奥运元素，制作了一个充满趣味和纪念意义的冬奥主题 `3D` 页面。本文涉及到的知识点主要包括：`TorusGeometry` 圆环面、`MeshLambertMaterial` 非光泽表面材质、`MeshDepthMaterial` 深度网格材质、`custromMaterial` 自定义材质、`Points` 粒子、`PointsMaterial` 点材质等。
 
 ## 效果
 
@@ -14,7 +14,7 @@
 
 ![move](./images/move.gif)
 
-> `👀` 在线预览：<https://dragonir.github.io/3d/#/olympic> （部署在 `GitHub`，加载速度可能会有点慢 `😓`）
+> `👀` 在线预览：<https://jojo-cpu.github.io/3d/#/olympic> （部署在 `GitHub`，加载速度可能会有点慢 `😓`）
 
 ## 实现
 
@@ -24,21 +24,23 @@
 
 ```js
 import React from 'react';
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { TWEEN } from "three/examples/jsm/libs/tween.module.min.js";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { TWEEN } from 'three/examples/jsm/libs/tween.module.min.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import bingdundunModel from './models/bingdundun.glb';
 // ...
 ```
 
-### 页面DOM结构
+### 页面 DOM 结构
 
 页面 `DOM` 结构非常简单，只有渲染 `3D` 元素的 `#container` 容器和显示加载进度的 `.olympic_loading`元素。
 
 ```js
 <div>
   <div id="container"></div>
-  {this.state.loadingProcess === 100 ? '' : (
+  {this.state.loadingProcess === 100 ? (
+    ''
+  ) : (
     <div className="olympic_loading">
       <div className="box">{this.state.loadingProcess} %</div>
     </div>
@@ -94,14 +96,16 @@ scene.add(ambientLight);
 ```js
 const manager = new THREE.LoadingManager();
 manager.onStart = (url, loaded, total) => {};
-manager.onLoad = () => { console.log('Loading complete!')};
+manager.onLoad = () => {
+  console.log('Loading complete!');
+};
 manager.onProgress = (url, loaded, total) => {
-  if (Math.floor(loaded / total * 100) === 100) {
-    this.setState({ loadingProcess: Math.floor(loaded / total * 100) });
+  if (Math.floor((loaded / total) * 100) === 100) {
+    this.setState({ loadingProcess: Math.floor((loaded / total) * 100) });
     // 镜头补间动画
     Animations.animateCamera(camera, controls, { x: 0, y: -1, z: 20 }, { x: 0, y: 0, z: 0 }, 3600, () => {});
   } else {
-    this.setState({ loadingProcess: Math.floor(loaded / total * 100) });
+    this.setState({ loadingProcess: Math.floor((loaded / total) * 100) });
   }
 };
 ```
@@ -145,15 +149,15 @@ loader.load(landModel, function (mesh) {
 
 ![bingdundun](images/bingdundun.png)
 
-**转换成Blender支持的模型，并在Blender中调整模型贴图法线、并添加贴图**:
+**转换成 Blender 支持的模型，并在 Blender 中调整模型贴图法线、并添加贴图**:
 
 ![blender](images/blender.png)
 
-**导出glb格式**:
+**导出 glb 格式**:
 
 ![bingdundun_1](images/bingdundun_1.png)
 
-> `📖` 在 `Blender` 中给模型添加贴图教程传送门：[在Blender中怎么给模型贴图](https://jingyan.baidu.com/article/363872ecf6367f2f4ba16f95.html)
+> `📖` 在 `Blender` 中给模型添加贴图教程传送门：[在 Blender 中怎么给模型贴图](https://jingyan.baidu.com/article/363872ecf6367f2f4ba16f95.html)
 
 仔细观察`冰墩墩 🐼`可以发现，它的外面有一层**透明塑料或玻璃质感外壳**，这个效果可以通过修改模型的透明度、金属度、粗糙度等材质参数实现，最后就可以渲染出如 `👆 banner图` 所示的那种效果，具体如以下代码所示。
 
@@ -163,16 +167,16 @@ loader.load(bingdundunModel, mesh => {
     if (child.isMesh) {
       // 内部
       if (child.name === 'oldtiger001') {
-        child.material.metalness = .5
-        child.material.roughness = .8
+        child.material.metalness = 0.5;
+        child.material.roughness = 0.8;
       }
       // 半透明外壳
       if (child.name === 'oldtiger002') {
         child.material.transparent = true;
-        child.material.opacity = .5
-        child.material.metalness = .2
-        child.material.roughness = 0
-        child.material.refractionRatio = 1
+        child.material.opacity = 0.5;
+        child.material.metalness = 0.2;
+        child.material.roughness = 0;
+        child.material.refractionRatio = 1;
         child.castShadow = true;
       }
     }
@@ -190,23 +194,26 @@ loader.load(bingdundunModel, mesh => {
 
 ```js
 const fiveCycles = [
-  { key: 'cycle_0', color: 0x0885c2, position: { x: -250, y: 0, z: 0 }},
-  { key: 'cycle_1', color: 0x000000, position: { x: -10, y: 0, z: 5 }},
-  { key: 'cycle_2', color: 0xed334e, position: { x: 230, y: 0, z: 0 }},
-  { key: 'cycle_3', color: 0xfbb132, position: { x: -125, y: -100, z: -5 }},
-  { key: 'cycle_4', color: 0x1c8b3c, position: { x: 115, y: -100, z: 10 }}
+  { key: 'cycle_0', color: 0x0885c2, position: { x: -250, y: 0, z: 0 } },
+  { key: 'cycle_1', color: 0x000000, position: { x: -10, y: 0, z: 5 } },
+  { key: 'cycle_2', color: 0xed334e, position: { x: 230, y: 0, z: 0 } },
+  { key: 'cycle_3', color: 0xfbb132, position: { x: -125, y: -100, z: -5 } },
+  { key: 'cycle_4', color: 0x1c8b3c, position: { x: 115, y: -100, z: 10 } },
 ];
 fiveCycles.map(item => {
-  let cycleMesh = new THREE.Mesh(new THREE.TorusGeometry(100, 10, 10, 50), new THREE.MeshLambertMaterial({
-    color: new THREE.Color(item.color),
-    side: THREE.DoubleSide
-  }));
+  let cycleMesh = new THREE.Mesh(
+    new THREE.TorusGeometry(100, 10, 10, 50),
+    new THREE.MeshLambertMaterial({
+      color: new THREE.Color(item.color),
+      side: THREE.DoubleSide,
+    })
+  );
   cycleMesh.castShadow = true;
   cycleMesh.position.set(item.position.x, item.position.y, item.position.z);
   meshes.push(cycleMesh);
   fiveCyclesGroup.add(cycleMesh);
 });
-fiveCyclesGroup.scale.set(.036, .036, .036);
+fiveCyclesGroup.scale.set(0.036, 0.036, 0.036);
 fiveCyclesGroup.position.set(0, 10, -8);
 scene.add(fiveCyclesGroup);
 ```
@@ -221,11 +228,11 @@ scene.add(fiveCyclesGroup);
 TorusGeometry(radius: Float, tube: Float, radialSegments: Integer, tubularSegments: Integer, arc: Float)
 ```
 
-* `radius`：圆环的半径，从圆环的中心到管道（横截面）的中心。默认值是 `1`。
-* `tube`：管道的半径，默认值为 `0.4`。
-* `radialSegments`：圆环的分段数，默认值为 `8`。
-* `tubularSegments`：管道的分段数，默认值为 `6`。
-* `arc`：圆环的圆心角（单位是弧度），默认值为 `Math.PI * 2`。
+- `radius`：圆环的半径，从圆环的中心到管道（横截面）的中心。默认值是 `1`。
+- `tube`：管道的半径，默认值为 `0.4`。
+- `radialSegments`：圆环的分段数，默认值为 `8`。
+- `tubularSegments`：管道的分段数，默认值为 `6`。
+- `arc`：圆环的圆心角（单位是弧度），默认值为 `Math.PI * 2`。
 
 #### `💡` MeshLambertMaterial 非光泽表面材质
 
@@ -237,7 +244,7 @@ TorusGeometry(radius: Float, tube: Float, radialSegments: Integer, tubularSegmen
 MeshLambertMaterial(parameters : Object)
 ```
 
-* `parameters`：（可选）用于定义材质外观的对象，具有一个或多个属性。材质的任何属性都可以从此处传入。
+- `parameters`：（可选）用于定义材质外观的对象，具有一个或多个属性。材质的任何属性都可以从此处传入。
 
 ### 创建旗帜
 
@@ -258,13 +265,13 @@ loader.load(flagModel, mesh => {
       child.castShadow = true;
       // 旗帜
       if (child.name === 'mesh_0001') {
-        child.material.metalness = .1;
-        child.material.roughness = .1;
+        child.material.metalness = 0.1;
+        child.material.roughness = 0.1;
         child.material.map = new THREE.TextureLoader().load(flagTexture);
       }
       // 旗杆
       if (child.name === '柱体') {
-        child.material.metalness = .6;
+        child.material.metalness = 0.6;
         child.material.roughness = 0;
         child.material.refractionRatio = 1;
         child.material.color = new THREE.Color(0xeeeeee);
@@ -297,12 +304,12 @@ loader.load(flagModel, mesh => {
 为了使树**只在贴图透明部分透明、其他地方不透明**，并且可以**产生树状阴影而不是长方体阴影**，需要给树模型添加如下 `MeshPhysicalMaterial`、`MeshDepthMaterial` 两种材质，两种材质使用同样的纹理贴图，其中 `MeshDepthMaterial` 添加到模型的 `custromMaterial` 属性上。
 
 ```js
- let treeMaterial = new THREE.MeshPhysicalMaterial({
+let treeMaterial = new THREE.MeshPhysicalMaterial({
   map: new THREE.TextureLoader().load(treeTexture),
   transparent: true,
   side: THREE.DoubleSide,
-  metalness: .2,
-  roughness: .8,
+  metalness: 0.2,
+  roughness: 0.8,
   depthTest: true,
   depthWrite: false,
   skinning: false,
@@ -313,10 +320,10 @@ loader.load(flagModel, mesh => {
 let treeCustomDepthMaterial = new THREE.MeshDepthMaterial({
   depthPacking: THREE.RGBADepthPacking,
   map: new THREE.TextureLoader().load(treeTexture),
-  alphaTest: 0.5
+  alphaTest: 0.5,
 });
 loader.load(treeModel, mesh => {
-  mesh.scene.traverse(child =>{
+  mesh.scene.traverse(child => {
     if (child.isMesh) {
       child.material = treeMaterial;
       child.custromMaterial = treeCustomDepthMaterial;
@@ -329,7 +336,7 @@ loader.load(treeModel, mesh => {
   let tree2 = mesh.scene.clone();
   tree2.position.set(10, -8, -15);
   tree2.scale.set(18, 18, 18);
-  scene.add(tree2)
+  scene.add(tree2);
   // ...
 });
 ```
@@ -348,14 +355,14 @@ loader.load(treeModel, mesh => {
 MeshDepthMaterial(parameters: Object)
 ```
 
-* `parameters`：（可选）用于定义材质外观的对象，具有一个或多个属性。材质的任何属性都可以从此处传入。
+- `parameters`：（可选）用于定义材质外观的对象，具有一个或多个属性。材质的任何属性都可以从此处传入。
 
 **特殊属性**：
 
-* `.depthPacking[Constant]`：`depth packing` 的编码。默认为 `BasicDepthPacking`。
-* `.displacementMap[Texture]`：位移贴图会影响网格顶点的位置，与仅影响材质的光照和阴影的其他贴图不同，移位的顶点可以投射阴影，阻挡其他对象，以及充当真实的几何体。
-* `.displacementScale[Float]`：位移贴图对网格的影响程度（黑色是无位移，白色是最大位移）。如果没有设置位移贴图，则不会应用此值。默认值为 `1`。
-* `.displacementBias[Float]`：位移贴图在网格顶点上的偏移量。如果没有设置位移贴图，则不会应用此值。默认值为 `0`。
+- `.depthPacking[Constant]`：`depth packing` 的编码。默认为 `BasicDepthPacking`。
+- `.displacementMap[Texture]`：位移贴图会影响网格顶点的位置，与仅影响材质的光照和阴影的其他贴图不同，移位的顶点可以投射阴影，阻挡其他对象，以及充当真实的几何体。
+- `.displacementScale[Float]`：位移贴图对网格的影响程度（黑色是无位移，白色是最大位移）。如果没有设置位移贴图，则不会应用此值。默认值为 `1`。
+- `.displacementBias[Float]`：位移贴图在网格顶点上的偏移量。如果没有设置位移贴图，则不会应用此值。默认值为 `0`。
 
 #### `💡` custromMaterial 自定义材质
 
@@ -379,7 +386,7 @@ let pointsMaterial = new THREE.PointsMaterial({
   blending: THREE.AdditiveBlending,
   // 景深衰弱
   sizeAttenuation: true,
-  depthTest: false
+  depthTest: false,
 });
 for (let i = 0; i < 1500; i++) {
   let vertice = new THREE.Vector3(Math.random() * range - range / 2, Math.random() * range * 1.5, Math.random() * range - range / 2);
@@ -406,9 +413,9 @@ scene.add(points);
 new THREE.Points(geometry, material);
 ```
 
-* 构造函数可以接受两个参数，一个几何体和一个材质，几何体参数用来制定粒子的位置坐标，材质参数用来格式化粒子；
-* 可以基于简单几何体对象如 `BoxGeometry`、`SphereGeometry`等作为粒子系统的参数；
-* 一般来讲，需要自己指定顶点来确定粒子的位置。
+- 构造函数可以接受两个参数，一个几何体和一个材质，几何体参数用来制定粒子的位置坐标，材质参数用来格式化粒子；
+- 可以基于简单几何体对象如 `BoxGeometry`、`SphereGeometry`等作为粒子系统的参数；
+- 一般来讲，需要自己指定顶点来确定粒子的位置。
 
 #### `💡` PointsMaterial 点材质
 
@@ -420,17 +427,17 @@ new THREE.Points(geometry, material);
 PointsMaterial(parameters : Object)
 ```
 
-* `parameters`：（可选）用于定义材质外观的对象，具有一个或多个属性。材质的任何属性都可以从此处传入。
+- `parameters`：（可选）用于定义材质外观的对象，具有一个或多个属性。材质的任何属性都可以从此处传入。
 
 #### `💡` 材质属性 .blending
 
 材质的`.blending` 属性主要控制纹理融合的叠加方式，`.blending` 属性的值包括：
 
-* `THREE.NormalBlending`：默认值
-* `THREE.AdditiveBlending`：加法融合模式
-* `THREE.SubtractiveBlending`：减法融合模式
-* `THREE.MultiplyBlending`：乘法融合模式
-* `THREE.CustomBlending`：自定义融合模式，与 `.blendSrc`, `.blendDst` 或 `.blendEquation` 属性组合使用
+- `THREE.NormalBlending`：默认值
+- `THREE.AdditiveBlending`：加法融合模式
+- `THREE.SubtractiveBlending`：减法融合模式
+- `THREE.MultiplyBlending`：乘法融合模式
+- `THREE.CustomBlending`：自定义融合模式，与 `.blendSrc`, `.blendDst` 或 `.blendEquation` 属性组合使用
 
 #### `💡` 材质属性 .sizeAttenuation
 
@@ -440,11 +447,11 @@ PointsMaterial(parameters : Object)
 
 几维向量就有几个分量，二维向量 `Vector2` 有 `x` 和 `y` 两个分量，三维向量 `Vector3` 有`x`、`y`、`z` 三个分量，四维向量 `Vector4` 有 `x`、`y`、`z`、`w` 四个分量。
 
-**相关API**：
+**相关 API**：
 
-* `Vector2`：二维向量
-* `Vector3`：三维向量
-* `Vector4`：四维向量
+- `Vector2`：二维向量
+- `Vector3`：三维向量
+- `Vector4`：四维向量
 
 ### 镜头控制、缩放适配、动画
 
@@ -460,16 +467,20 @@ controls.enableZoom = false;
 controls.minPolarAngle = 1.4;
 controls.maxPolarAngle = 1.8;
 // 水平旋转角度限制
-controls.minAzimuthAngle = -.6;
-controls.maxAzimuthAngle = .6;
+controls.minAzimuthAngle = -0.6;
+controls.maxAzimuthAngle = 0.6;
 ```
 
 ```js
-window.addEventListener('resize', () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-}, false);
+window.addEventListener(
+  'resize',
+  () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  },
+  false
+);
 ```
 
 ```js
@@ -482,14 +493,14 @@ function animate() {
   // 镜头动画
   TWEEN && TWEEN.update();
   // 五环自转
-  fiveCyclesGroup && (fiveCyclesGroup.rotation.y += .01);
+  fiveCyclesGroup && (fiveCyclesGroup.rotation.y += 0.01);
   // 顶点变动之后需要更新，否则无法实现雨滴特效
   points.geometry.verticesNeedUpdate = true;
   // 雪花动画更新
   let vertices = points.geometry.vertices;
   vertices.forEach(function (v) {
-    v.y = v.y - (v.velocityY);
-    v.x = v.x - (v.velocityX);
+    v.y = v.y - v.velocityY;
+    v.x = v.x - v.velocityX;
     if (v.y <= 0) v.y = 60;
     if (v.x <= -20 || v.x >= 20) v.velocityX = v.velocityX * -1;
   });
@@ -502,33 +513,33 @@ function animate() {
 
 `💡` 本文中主要包含的新知识点包括：
 
-* `TorusGeometry` 圆环面
-* `MeshLambertMaterial` 非光泽表面材质
-* `MeshDepthMaterial` 深度网格材质
-* `custromMaterial` 自定义材质
-* `Points` 粒子
-* `PointsMaterial` 点材质
-* 材质属性 `.blending`、`.sizeAttenuation`
-* `Three.js` 向量
+- `TorusGeometry` 圆环面
+- `MeshLambertMaterial` 非光泽表面材质
+- `MeshDepthMaterial` 深度网格材质
+- `custromMaterial` 自定义材质
+- `Points` 粒子
+- `PointsMaterial` 点材质
+- 材质属性 `.blending`、`.sizeAttenuation`
+- `Three.js` 向量
 
 **进一步优化的空间**:
 
-* 添加更多的交互功能、界面样式进一步优化；
-* 吉祥物冰墩墩添加骨骼动画，并可以通过鼠标和键盘控制其移动和交互。
+- 添加更多的交互功能、界面样式进一步优化；
+- 吉祥物冰墩墩添加骨骼动画，并可以通过鼠标和键盘控制其移动和交互。
 
 **下期预告**：
 
-* 《`Metahuman`元人类！`Three.js`人像优化》
+- 《`Metahuman`元人类！`Three.js`人像优化》
 
 > 想了解场景初始化、光照、阴影、基础几何体、网格、材质及其他 `Three.js` 的相关知识，可阅读我往期文章。如果觉得文章对你有帮助，不要忘了**一键三连哦 👍**。
 
 ## 附录
 
-* [1]. [1000粉！使用Three.js制作一个专属3D奖牌 🥇](https://juejin.cn/post/7055079293247815711)
-* [2]. [Three.js 实现虎年春节3D创意页面](https://juejin.cn/post/7051745314914435102)
-* [3]. [Three.js 实现脸书元宇宙3D动态Logo](https://juejin.cn/post/7031893833163997220)
-* [4]. [Three.js 实现3D全景侦探小游戏](https://juejin.cn/post/7042298964468564005)
-* [5]. [Three.js实现炫酷的酸性风格3D页面](https://juejin.cn/post/7012996721693163528)
-* [6]. [3dx模型转换为blender支持格式](https://anyconv.com/tw/max-zhuan-obj/)
+- [1]. [1000 粉！使用 Three.js 制作一个专属 3D 奖牌 🥇](https://juejin.cn/post/7055079293247815711)
+- [2]. [Three.js 实现虎年春节 3D 创意页面](https://juejin.cn/post/7051745314914435102)
+- [3]. [Three.js 实现脸书元宇宙 3D 动态 Logo](https://juejin.cn/post/7031893833163997220)
+- [4]. [Three.js 实现 3D 全景侦探小游戏](https://juejin.cn/post/7042298964468564005)
+- [5]. [Three.js 实现炫酷的酸性风格 3D 页面](https://juejin.cn/post/7012996721693163528)
+- [6]. [3dx 模型转换为 blender 支持格式](https://anyconv.com/tw/max-zhuan-obj/)
 
 ![panda](images/panda.png)

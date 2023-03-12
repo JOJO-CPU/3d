@@ -1,4 +1,4 @@
-# 使用Three.js实现炫酷的赛博朋克风格3D数字地球大屏 🌐
+# 使用 Three.js 实现炫酷的赛博朋克风格 3D 数字地球大屏 🌐
 
 ![banner](./images/banner.gif)
 
@@ -8,7 +8,7 @@
 
 ![role](./images/role.png)
 
-近期工作有涉及到数字大屏的需求，于是利用业余时间，结合 `Three.js` 和 [CSS实现赛博朋克2077风格视觉效果](https://juejin.cn/post/6972759988632551460) 实现炫酷 `3D` 数字地球大屏页面。页面使用 `React + Three.js + Echarts + stylus` 技术栈，本文涉及到的主要知识点包括：`THREE.Spherical` 球体坐标系的应用、`Shader` 结合 `TWEEN` 实现飞线和冲击波动画效果、`dat.GUI` 调试工具库的使用、`clip-path` 创建不规则图形、`Echarts` 的基本使用方法、`radial-gradient` 创建雷达图形及动画、`GlitchPass` 添加故障风格后期、`Raycaster` 网格点击事件等。
+近期工作有涉及到数字大屏的需求，于是利用业余时间，结合 `Three.js` 和 [CSS 实现赛博朋克 2077 风格视觉效果](https://juejin.cn/post/6972759988632551460) 实现炫酷 `3D` 数字地球大屏页面。页面使用 `React + Three.js + Echarts + stylus` 技术栈，本文涉及到的主要知识点包括：`THREE.Spherical` 球体坐标系的应用、`Shader` 结合 `TWEEN` 实现飞线和冲击波动画效果、`dat.GUI` 调试工具库的使用、`clip-path` 创建不规则图形、`Echarts` 的基本使用方法、`radial-gradient` 创建雷达图形及动画、`GlitchPass` 添加故障风格后期、`Raycaster` 网格点击事件等。
 
 ## 效果
 
@@ -16,9 +16,9 @@
 
 ![scale](./images/scale.gif)
 
-* `💻` 本页面仅适配 `PC` 端，大屏访问效果更佳。
-* `👁‍🗨` 在线预览地址1：<https://3d-eosin.vercel.app/#/earthDigital>
-* `👁‍🗨` 在线预览地址2：<https://dragonir.github.io/3d/#/earthDigital>
+- `💻` 本页面仅适配 `PC` 端，大屏访问效果更佳。
+- `👁‍🗨` 在线预览地址 1：<https://3d-eosin.vercel.app/#/earthDigital>
+- `👁‍🗨` 在线预览地址 2：<https://jojo-cpu.github.io/3d/#/earthDigital>
 
 ## 实现
 
@@ -45,7 +45,7 @@ import { BarChart /*...*/ } from 'echarts/charts';
 import { GridComponent /*...*/ } from 'echarts/components';
 import { LabelLayout /*...*/ } from 'echarts/features';
 import { CanvasRenderer } from 'echarts/renderers';
-echarts.use([BarChart, GridComponent, /* ...*/ ]);
+echarts.use([BarChart, GridComponent /* ...*/]);
 ```
 
 ### `📃` 页面结构
@@ -72,27 +72,31 @@ echarts.use([BarChart, GridComponent, /* ...*/ ]);
 const renderer = new THREE.WebGLRenderer({
   canvas: document.querySelector('canvas.webgl'),
   antialias: true,
-  alpha: true
+  alpha: true,
 });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 // 创建场景
 const scene = new THREE.Scene();
 // 创建相机
-const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, .01, 50);
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 50);
 camera.position.set(0, 0, 15.5);
 // 添加镜头轨道控制器
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.enablePan = false;
 // 页面缩放监听并重新更新场景和相机
-window.addEventListener('resize', () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize( window.innerWidth, window.innerHeight );
-}, false);
+window.addEventListener(
+  'resize',
+  () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  },
+  false
+);
 // 页面重绘动画
-renderer.setAnimationLoop( _ => {
+renderer.setAnimationLoop(_ => {
   TWEEN.update();
   earth.rotation.y += 0.001;
   renderer.render(scene, camera);
@@ -184,15 +188,18 @@ scene.add(earth);
 
 ### `🔧` 添加调试工具
 
-为了实时调整球体的样式和后续飞线和冲击波的参数调整，可以使用工具库 `dat.GUI`。它可以创建一个表单添加到页面，通过调整表单上面的参数、滑块和数值等方式绑定页面参数，参数值更改后可以实时更新画面，这样就不用一边到编辑器调整代码一边到浏览器查看效果了。基本用法如下，本例中可以在页面通过点击键盘 `⌨` **H键**显示或隐藏参数表单，通过表单可以修改 `🌐` 地球背景色、飞线颜色、冲击波幅度大小等效果。
+为了实时调整球体的样式和后续飞线和冲击波的参数调整，可以使用工具库 `dat.GUI`。它可以创建一个表单添加到页面，通过调整表单上面的参数、滑块和数值等方式绑定页面参数，参数值更改后可以实时更新画面，这样就不用一边到编辑器调整代码一边到浏览器查看效果了。基本用法如下，本例中可以在页面通过点击键盘 `⌨` **H 键**显示或隐藏参数表单，通过表单可以修改 `🌐` 地球背景色、飞线颜色、冲击波幅度大小等效果。
 
 ```js
 const gui = new dat.GUI();
 gui.add(uniforms.maxSize, 'value', 0.01, 0.06).step(0.001).name('陆地');
 gui.add(uniforms.minSize, 'value', 0.01, 0.06).step(0.001).name('海洋');
-gui.addColor(params.colors, 'base').name('基础色').onChange(val => {
- earth && earth.material.color.set(val);
-});
+gui
+  .addColor(params.colors, 'base')
+  .name('基础色')
+  .onChange(val => {
+    earth && earth.material.color.set(val);
+  });
 ```
 
 ![step_1](./images/step_1.png)
@@ -204,7 +211,8 @@ gui.addColor(params.colors, 'base').name('基础色').onChange(val => {
 这部分内容实现地球表层的飞线和冲击波效果 `🌠`，基本思路是：使用 `THREE.Line` 创建 `10` 条随机位置的飞线路径，通过 `setPath` 方法设置飞线的路径 然后通过 `TWEEN` 更新飞线和冲击波扩散动画，一条动画结束后，在终点的位置基础上重新调整飞线开始的位置，通过更新 `Shader` 参数 实现飞线和冲击波效果，并循环执行该过程，最后将飞线和冲击波关联到地球 `🌐` 上，具体实现如以下代码所示：
 
 ```js
-let maxImpactAmount = 10, impacts = [];
+let maxImpactAmount = 10,
+  impacts = [];
 let trails = [];
 for (let i = 0; i < maxImpactAmount; i++) {
   impacts.push({
@@ -212,13 +220,13 @@ for (let i = 0; i < maxImpactAmount; i++) {
     impactMaxRadius: 5 * THREE.Math.randFloat(0.5, 0.75),
     impactRatio: 0,
     prevPosition: new THREE.Vector3().random().subScalar(0.5).setLength(5),
-    trailRatio: {value: 0},
-    trailLength: {value: 0}
+    trailRatio: { value: 0 },
+    trailLength: { value: 0 },
   });
   makeTrail(i);
 }
 // 创建虚线材质和线网格并设置路径
-function makeTrail(idx){
+function makeTrail(idx) {
   let pts = new Array(100 * 3).fill(0);
   let g = new THREE.BufferGeometry();
   g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
@@ -230,7 +238,7 @@ function makeTrail(idx){
       shader.uniforms.lineLength = impacts[idx].trailLength;
       // 片段着色器
       shader.fragmentShader = lineFragmentShader;
-    }
+    },
   });
   // 创建飞线
   let l = new THREE.Line(g, m);
@@ -265,7 +273,7 @@ function setPath(l, startPoint, endPoint, peakHeight) {
     v3Major.copy(basisMajor).applyAxisAngle(nrm, angleValue);
     v3Minor.copy(basisMinor).applyAxisAngle(nrm, angleValue + Math.PI * 2 * divisionRatio * 1);
     v3Inter.addVectors(v3Major, v3Minor);
-    let newLength = ((v3Inter.length() - radius) * peakRatio) + radius;
+    let newLength = (v3Inter.length() - radius) * peakRatio + radius;
     vFinal.copy(v3Inter).setLength(newLength);
     pos.setXYZ(i, vFinal.x, vFinal.y, vFinal.z);
   }
@@ -287,12 +295,10 @@ for (let i = 0; i < maxImpactAmount; i++) {
       let speed = 3;
       let len = path.geometry.attributes.lineDistance.array[99];
       let dur = len / speed;
-      let tweenTrail = new TWEEN.Tween({ value: 0 })
-        .to({value: 1}, dur * 1000)
-        .onUpdate( val => {
-          impacts[i].trailRatio.value = val.value;
-        });
-        var tweenImpact = new TWEEN.Tween({ value: 0 })
+      let tweenTrail = new TWEEN.Tween({ value: 0 }).to({ value: 1 }, dur * 1000).onUpdate(val => {
+        impacts[i].trailRatio.value = val.value;
+      });
+      var tweenImpact = new TWEEN.Tween({ value: 0 })
         .to({ value: 1 }, THREE.Math.randInt(2500, 5000))
         .onUpdate(val => {
           uniforms.impacts.value[i].impactRatio = val.value;
@@ -306,7 +312,7 @@ for (let i = 0; i < maxImpactAmount; i++) {
         });
       tweenTrail.chain(tweenImpact);
       tweenTrail.start();
-    }
+    },
   });
 }
 ```
@@ -400,7 +406,7 @@ chart_1 && chart_1.setOption(chart_1_option);
 
 ```js
 const composer = new EffectComposer(renderer);
-composer.addPass( new RenderPass(scene, camera));
+composer.addPass(new RenderPass(scene, camera));
 const glitchPass = new GlitchPass();
 composer.addPass(glitchPass);
 ```
@@ -412,70 +418,74 @@ composer.addPass(glitchPass);
 ```js
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
-window.addEventListener('dblclick', event => {
-  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-  mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
-  raycaster.setFromCamera(mouse, camera);
-  const intersects = raycaster.intersectObjects(earth.children);
-  if (intersects.length > 0) {
-    this.setState({
-      showModal: true,
-      modelText: tips[Math.floor(Math.random() * tips.length)]
-    });
-  }
-}, false);
+window.addEventListener(
+  'dblclick',
+  event => {
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(earth.children);
+    if (intersects.length > 0) {
+      this.setState({
+        showModal: true,
+        modelText: tips[Math.floor(Math.random() * tips.length)],
+      });
+    }
+  },
+  false
+);
 ```
 
 ![step_6](./images/step_6.png)
 
 ### `🎥` 添加入场动画等其他细节
 
-最后，还添加了一些样式细节和动画效果，如头部和两侧卡片的**入场动画**、头部时间坐标**文字闪烁动画**、第一张卡片**按钮故障风格动画**、`Cyberpunk 2077 Logo` 的**阴影效果**等。由于文章篇幅有限，不在这里细讲，感兴趣的朋友可以自己查看源码学习。也可以查看阅读我的另一篇文章 [仅用CSS几步实现赛博朋克2077风格视觉效果 > 传送门 `🚪`](https://juejin.cn/post/6972759988632551460) 查看更多细节内容。
+最后，还添加了一些样式细节和动画效果，如头部和两侧卡片的**入场动画**、头部时间坐标**文字闪烁动画**、第一张卡片**按钮故障风格动画**、`Cyberpunk 2077 Logo` 的**阴影效果**等。由于文章篇幅有限，不在这里细讲，感兴趣的朋友可以自己查看源码学习。也可以查看阅读我的另一篇文章 [仅用 CSS 几步实现赛博朋克 2077 风格视觉效果 > 传送门 `🚪`](https://juejin.cn/post/6972759988632551460) 查看更多细节内容。
 
 ## 总结
 
 本文包含的新知识点主要包括：
 
-* `THREE.Spherical` 球体坐标系的应用
-* `Shader` 结合 `TWEEN` 实现飞线和冲击波动画效果
-* `dat.GUI` 调试工具库的使用
-* `clip-path` 创建不规则图形
-* `Echarts` 的基本使用方法
-* `radial-gradient` 创建雷达图形及动画
-* `GlitchPass` 添加故障风格后期
-* `Raycaster` 网格点击事件等
+- `THREE.Spherical` 球体坐标系的应用
+- `Shader` 结合 `TWEEN` 实现飞线和冲击波动画效果
+- `dat.GUI` 调试工具库的使用
+- `clip-path` 创建不规则图形
+- `Echarts` 的基本使用方法
+- `radial-gradient` 创建雷达图形及动画
+- `GlitchPass` 添加故障风格后期
+- `Raycaster` 网格点击事件等
 
 **后续计划**：
 
 本页面虽然已经做了很多效果和优化，但是还有很多改进的空间，后续我计划更新的内容包括：
 
-* `🌏` 地球坐标和实际地理坐标结合，可以根据经纬度定位到国家、省份等具体位置
-* `💻` 缩放适配不同屏幕尺寸
-* `📊` 图表以及仪表盘展示一些真实的数据并且可以实时更新
-* `🌠` 头部和卡片添加一些炫酷的描边动画
-* `🌟` 添加宇宙星空粒子背景（有时间的话，现在的噪点背景也不错）
-* `🐌` 性能优化
+- `🌏` 地球坐标和实际地理坐标结合，可以根据经纬度定位到国家、省份等具体位置
+- `💻` 缩放适配不同屏幕尺寸
+- `📊` 图表以及仪表盘展示一些真实的数据并且可以实时更新
+- `🌠` 头部和卡片添加一些炫酷的描边动画
+- `🌟` 添加宇宙星空粒子背景（有时间的话，现在的噪点背景也不错）
+- `🐌` 性能优化
 
 > 想了解其他前端知识或其他未在本文中详细描述的 `Web 3D` 开发技术相关知识，可阅读我往期的文章。**转载请注明原文地址和作者**。如果觉得文章对你有帮助，不要忘了**一键三连哦 👍**。
 
 ## 附录
 
-* [我的3D专栏可以点击此链接访问 👈](https://juejin.cn/column/7049923956257587213)
-* [1]. [🦊 Three.js 实现3D开放世界小游戏：阿狸的多元宇宙](https://juejin.cn/post/7081429595689320478)
-* [2]. [🔥 Three.js 火焰效果实现艾尔登法环动态logo](https://juejin.cn/post/7077726955528781832)
-* [3]. [🐼 Three.js 实现2022冬奥主题3D趣味页面，含冰墩墩](https://juejin.cn/post/7060292943608807460)
-* `...`
+- [我的 3D 专栏可以点击此链接访问 👈](https://juejin.cn/column/7049923956257587213)
+- [1]. [🦊 Three.js 实现 3D 开放世界小游戏：阿狸的多元宇宙](https://juejin.cn/post/7081429595689320478)
+- [2]. [🔥 Three.js 火焰效果实现艾尔登法环动态 logo](https://juejin.cn/post/7077726955528781832)
+- [3]. [🐼 Three.js 实现 2022 冬奥主题 3D 趣味页面，含冰墩墩](https://juejin.cn/post/7060292943608807460)
+- `...`
 
-* [1]. [📷 前端实现很哇塞的浏览器端扫码功能](https://juejin.cn/post/7018722520345870350)
-* [2]. [🌏 前端瓦片地图加载之塞尔达传说旷野之息](https://juejin.cn/post/7007432493569671182)
-* [3]. [😱 仅用CSS几步实现赛博朋克2077风格视觉效果](https://juejin.cn/post/6972759988632551460)
-* `...`
+- [1]. [📷 前端实现很哇塞的浏览器端扫码功能](https://juejin.cn/post/7018722520345870350)
+- [2]. [🌏 前端瓦片地图加载之塞尔达传说旷野之息](https://juejin.cn/post/7007432493569671182)
+- [3]. [😱 仅用 CSS 几步实现赛博朋克 2077 风格视觉效果](https://juejin.cn/post/6972759988632551460)
+- `...`
 
 ## 参考
 
-* [1]. [https://threejs.org](https://threejs.org)
-* [2]. [https://github.com/dataarts/dat.gui/blob/master/API.md](https://github.com/dataarts/dat.gui/blob/master/API.md)
-* [3]. [https://echarts.apache.org/zh/index.html](https://echarts.apache.org/zh/index.html)
-* [4]. [https://www.cnblogs.com/pangys/p/13276936.html](https://www.cnblogs.com/pangys/p/13276936.html)
-* [5]. [https://developer.mozilla.org/zh-CN/docs/Web/CSS/gradient/radial-gradient](https://developer.mozilla.org/zh-CN/docs/Web/CSS/gradient/radial-gradient)
-* [6]. [https://developer.mozilla.org/zh-CN/docs/Web/CSS/clip-path](https://developer.mozilla.org/zh-CN/docs/Web/CSS/clip-path)
+- [1]. [https://threejs.org](https://threejs.org)
+- [2]. [https://github.com/dataarts/dat.gui/blob/master/API.md](https://github.com/dataarts/dat.gui/blob/master/API.md)
+- [3]. [https://echarts.apache.org/zh/index.html](https://echarts.apache.org/zh/index.html)
+- [4]. [https://www.cnblogs.com/pangys/p/13276936.html](https://www.cnblogs.com/pangys/p/13276936.html)
+- [5]. [https://developer.mozilla.org/zh-CN/docs/Web/CSS/gradient/radial-gradient](https://developer.mozilla.org/zh-CN/docs/Web/CSS/gradient/radial-gradient)
+- [6]. [https://developer.mozilla.org/zh-CN/docs/Web/CSS/clip-path](https://developer.mozilla.org/zh-CN/docs/Web/CSS/clip-path)
